@@ -1,11 +1,12 @@
 /* lφ Lo-Phi custom version for Vivaldi
+ * Stable Arc-style pinned tabs version
+ *
  * Goal:
  * - pinned tabs = dynamic-width rounded favicon-only blocks
  * - pinned tab horizontal gap matches normal row gap
  * - normal tabs remain original
  * - tab stacks remain original
  * - accordion arrows remain visible, centered and light like the New Tab (+) button
- * - small 2px spacing between standalone tabs / stack blocks
  * - New Tab (+) button visible and not vertically centered in empty space
  * - pinned tab notification badge fixed and not clipped
  * - separator line does not touch sidebar edges
@@ -21,7 +22,7 @@
 	--phi--pinned-tab-height: 2.35rem;
 
 	/* Small spacing between normal tab rows / stack blocks */
-	--phi--normal-row-gap: 2px;
+	--phi--normal-row-gap: 4px;
 
 	/* Gap between pinned tab columns.
 	 * Kept equal to normal row gap for a consistent rhythm.
@@ -29,7 +30,7 @@
 	--phi--pinned-tab-gap: var(--phi--normal-row-gap);
 
 	/* Stable height for tab-stack accordion arrows */
-	--phi--accordion-arrow-height: 14px;
+	--phi--accordion-arrow-height: 10px;
 
 	/* Separator side inset */
 	--phi--separator-inset: 12px;
@@ -299,6 +300,9 @@
 
 		opacity: 1 !important;
 		color: var(--colorFg) !important;
+
+		/* Fine-tune vertical position without overwriting Vivaldi's up/down rotation */
+		transform: translateY(-1px) !important;
 	}
 
 	.tab-strip .tab-position.accordion-toggle-arrow path
