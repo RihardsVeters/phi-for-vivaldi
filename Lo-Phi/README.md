@@ -7,8 +7,9 @@
 # <img src="../icons/phi.svg" width="32" height="32"> Lo-Phi (/'loʊ,faɪ/)
 
 Lo-Fi variant of Phi, the ultimate vertical experience theme for Vivaldi, made with attention to details.
+Added some fixes for this Vivaldi Mod - added support for accordion style stacks and smaller pinned tabs.
 
-| ![](./screenshots/1_linux.webp) | ![](./screenshots/2_mac.webp) |
+| ![](/Lo-Phi/screenshots/Lo-Phi-RihardsVeters_custom.webp) |
 |---------------------------------|-------------------------------|
 
 ## :sparkles: Features
