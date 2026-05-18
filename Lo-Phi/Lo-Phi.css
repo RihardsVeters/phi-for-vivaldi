@@ -12,7 +12,7 @@
  * - New Tab (+) button visible and not overlaying tabs
  * - vertical tab list scrolling preserved
  * - address bar can expand normally when focused
- * - pinned tab notification badge fixed and not clipped
+ * - pinned tab notification badge fixed and kept inside the pinned tab to avoid clipping
  * - separator line does not touch sidebar edges
  *
  * Important:
@@ -227,13 +227,15 @@
 		display: none;
 	}
 
-	/* Fixed pinned tab notification badge */
+	/* Fixed pinned tab notification badge.
+	 * Badge is kept inside the pinned tab block to avoid clipping by the scroll container.
+	 */
 	.tab-strip .tab-position.is-pinned .button-badge
 	{
 		position: absolute !important;
 
-		top: -4px !important;
-		right: -4px !important;
+		top: 1px !important;
+		right: 1px !important;
 
 		width: 16px !important;
 		min-width: 16px !important;
