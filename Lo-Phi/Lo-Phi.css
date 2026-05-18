@@ -1,34 +1,37 @@
-/* lφ Lo-Phi (/'loʊ,faɪ/)
- * Lo-Fi version of Phi, the ultimate vertical experience theme for Vivaldi, made with attention to details.
- * Version 2026_05_15.0
- *
- * Last Linux test   : -
- * Last Windows test : -
- * Last Mac test     : Lo-Phi current on Vivaldi v7
- *
- * (C) 2026 — KaKi87
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * https://git.kaki87.net/KaKi87/phi-for-vivaldi/LoPhi
+/* lφ Lo-Phi custom version for Vivaldi
+ * Goal:
+ * - pinned tabs = small rounded favicon-only squares
+ * - normal tabs remain original
+ * - tab stacks remain original
+ * - accordion arrows remain visible, centered and light like the New Tab (+) button
+ * - small 2px spacing between standalone tabs / stack blocks
+ * - New Tab (+) button visible and not vertically centered in empty space
+ * - pinned tab notification badge fixed and not clipped
+ * - separator line does not touch sidebar edges
+ * (C) 2026 — Rihards Veters edits for original mod by KaKi87
  */
-
- /*┌──────────────────┐
-   │User customization│
-   └──────────────────┘*/
 
 :root
 {
 	--phi--pinned-column-count: 4;
 	--phi--is-stacked-tabs-inline: 1;
+
+	/* Pinned tab visual square size */
+	--phi--pinned-tab-size: 2rem;
+
+	/* Gap between pinned tab squares */
+	--phi--pinned-tab-gap: 5px;
+
+	/* Small spacing between normal tab rows / stack blocks */
+	--phi--normal-row-gap: 2px;
+
+	/* Stable height for tab-stack accordion arrows */
+	--phi--accordion-arrow-height: 14px;
+
+	/* Separator side inset */
+	--phi--separator-inset: 12px;
 }
 
-/*
- * You may copy the above settings in a separate 'phi-custom.css'
- * while replacing ':root' with 'body' to persist your customizations when updating.
- * See the README for detailed instructions.
- */
 @import './phi-settings.css';
 
 /*┌───────────┐
@@ -46,61 +49,296 @@
 	.tab-strip
 	{
 		display: grid;
+
+		/* Pinned tabs sit in columns,
+		 * normal tabs span full width.
+		 */
 		grid-template-columns: repeat(var(--phi--pinned-column-count), minmax(0, 1fr));
-		grid-auto-rows: 2rem;
-		gap: 5px;
-	
-		.tab-position,
-		.separator
-		{
-			position: relative;
-			transform: none;
-			height: 100%;
-		}
-	
-		.tab-position
-		{
-			& > :first-child,
-			& > :first-child > :first-child
-			{
-				max-height: none;
-			}
-	
-			&.is-pinned
-			{
-				grid-row: span 2;
-	
-				.tab-header
-				{
-					flex: 1;
-					padding: 0;
-					justify-content: center;
-				}
-	
-				.title
-			    {
-			        display: none;
-			    }
-			}
-		
-			&:not(.is-pinned)
-			{
-				grid-column: 1 / -1;
-	
-				.tab
-				{
-					justify-content: center;
-				}
-			}
-		}
-	
-		.separator
-		{
-			grid-column: 1 / -1;
-			align-items: center;
-		}
+
+		/* Preserve Vivaldi-calculated row heights:
+		 * normal tabs, separators, opened stacks.
+		 */
+		grid-auto-rows: min-content;
+
+		column-gap: var(--phi--pinned-tab-gap);
+		row-gap: var(--phi--normal-row-gap);
+
+		/* Important for pinned badge visibility */
+		overflow: visible !important;
 	}
-	
+
+	.tab-strip > span
+	{
+		overflow: visible !important;
+	}
+
+	.tab-strip .tab-position,
+	.tab-strip .separator
+	{
+		position: relative;
+		transform: none;
+
+		/* Preserve original Vivaldi-calculated height */
+		height: var(--Height, auto);
+		min-height: var(--Height, auto);
+		max-height: var(--Height, none);
+	}
+
+	.tab-strip .tab-position > :first-child,
+	.tab-strip .tab-position > :first-child > :first-child
+	{
+		max-height: none;
+	}
+
+	/* ----------------------------- */
+	/* Pinned tabs only               */
+	/* ----------------------------- */
+
+	.tab-strip .tab-position.is-pinned
+	{
+		grid-column: auto;
+		grid-row: auto;
+
+		height: var(--phi--pinned-tab-size);
+		min-height: var(--phi--pinned-tab-size);
+		max-height: var(--phi--pinned-tab-size);
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		overflow: visible !important;
+		z-index: 5 !important;
+	}
+
+	.tab-strip .tab-position.is-pinned .tab-wrapper
+	{
+		width: var(--phi--pinned-tab-size);
+		height: var(--phi--pinned-tab-size);
+		min-width: var(--phi--pinned-tab-size);
+		max-width: var(--phi--pinned-tab-size);
+		min-height: var(--phi--pinned-tab-size);
+		max-height: var(--phi--pinned-tab-size);
+
+		margin: 0 auto;
+
+		overflow: visible !important;
+		position: relative;
+	}
+
+	.tab-strip .tab-position.is-pinned .tab
+	{
+		width: var(--phi--pinned-tab-size);
+		height: var(--phi--pinned-tab-size);
+		min-width: var(--phi--pinned-tab-size);
+		max-width: var(--phi--pinned-tab-size);
+		min-height: var(--phi--pinned-tab-size);
+		max-height: var(--phi--pinned-tab-size);
+
+		margin: 0;
+		padding: 0;
+
+		border-radius: var(--currentRadius);
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		overflow: visible !important;
+		position: relative;
+	}
+
+	.tab-strip .tab-position.is-pinned .tab-header
+	{
+		width: 100%;
+		height: 100%;
+
+		padding: 0;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		flex: 1 1 auto;
+
+		position: relative;
+		overflow: visible !important;
+	}
+
+	.tab-strip .tab-position.is-pinned .favicon
+	{
+		margin: 0;
+		flex: 0 0 auto;
+	}
+
+	.tab-strip .tab-position.is-pinned .title,
+	.tab-strip .tab-position.is-pinned .close,
+	.tab-strip .tab-position.is-pinned .button-toolbar
+	{
+		display: none;
+	}
+
+	/* Fixed pinned tab notification badge */
+	.tab-strip .tab-position.is-pinned .button-badge
+	{
+		position: absolute !important;
+
+		top: -4px !important;
+		right: -4px !important;
+
+		width: 16px !important;
+		min-width: 16px !important;
+		max-width: none !important;
+
+		height: 16px !important;
+		min-height: 16px !important;
+		max-height: 16px !important;
+
+		padding: 0 4px !important;
+		margin: 0 !important;
+
+		border-radius: 999px !important;
+
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+
+		font-size: 10px !important;
+		font-weight: 700 !important;
+		line-height: 16px !important;
+
+		z-index: 50 !important;
+		pointer-events: none !important;
+
+		box-sizing: border-box !important;
+		transform: none !important;
+		white-space: nowrap !important;
+	}
+
+	/* ----------------------------- */
+	/* Everything else remains normal */
+	/* ----------------------------- */
+
+	.tab-strip .tab-position:not(.is-pinned),
+	.tab-strip .separator
+	{
+		grid-column: 1 / -1;
+	}
+
+	/* Separator line: keep it inset from sidebar edges */
+	.tab-strip .separator
+	{
+		align-items: center;
+
+		width: calc(100% - (var(--phi--separator-inset) * 2)) !important;
+		margin-left: var(--phi--separator-inset) !important;
+		margin-right: var(--phi--separator-inset) !important;
+
+		justify-self: center !important;
+	}
+
+	.tab-strip .separator hr
+	{
+		width: 100% !important;
+		margin-left: 0 !important;
+		margin-right: 0 !important;
+	}
+
+	/* Do not add manual margins to normal tabs */
+	.tab-strip .tab-position:not(.is-pinned):not(.accordion-toggle-arrow)
+	{
+		margin-top: 0 !important;
+		margin-bottom: 0 !important;
+	}
+
+	/* ----------------------------- */
+	/* Stable accordion arrow spacing */
+	/* ----------------------------- */
+
+	.tab-strip .tab-position.accordion-toggle-arrow
+	{
+		grid-column: 1 / -1;
+
+		--Height: var(--phi--accordion-arrow-height) !important;
+
+		height: var(--phi--accordion-arrow-height) !important;
+		min-height: var(--phi--accordion-arrow-height) !important;
+		max-height: var(--phi--accordion-arrow-height) !important;
+
+		margin: 0 !important;
+		padding: 0 !important;
+
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+
+		opacity: 1 !important;
+		overflow: visible !important;
+		pointer-events: auto !important;
+		cursor: pointer !important;
+	}
+
+	.tab-strip .tab-position.accordion-toggle-arrow .VivaldiSvgIcon
+	{
+		width: 10px !important;
+		height: 10px !important;
+
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+
+		margin: 0 !important;
+		padding: 0 !important;
+
+		opacity: 1 !important;
+		color: var(--colorFg) !important;
+	}
+
+	.tab-strip .tab-position.accordion-toggle-arrow svg
+	{
+		width: 10px !important;
+		height: 10px !important;
+
+		display: block !important;
+
+		margin: 0 !important;
+		padding: 0 !important;
+
+		opacity: 1 !important;
+		color: var(--colorFg) !important;
+	}
+
+	.tab-strip .tab-position.accordion-toggle-arrow path
+	{
+		fill: currentColor !important;
+		opacity: 1 !important;
+	}
+
+	.tab-strip .tab-position.accordion-toggle-arrow:hover .VivaldiSvgIcon
+	{
+		opacity: 1 !important;
+		color: var(--colorFg) !important;
+	}
+
+	/* Opened accordion stack:
+	 * remove the artificial 2px row-gap inside opened stack,
+	 * but keep the 2px spacing between separate blocks.
+	 */
+	.tab-strip .tab-position:has(.tab-in-accordion):not(:has(.tab-first-in-group))
+	{
+		margin-top: calc(-1 * var(--phi--normal-row-gap)) !important;
+	}
+
+	.tab-strip .tab-position:has(.tab-first-in-group)
+	{
+		margin-top: 0 !important;
+	}
+
+	/* ----------------------------- */
+	/* Original Lo-Phi stacked tabs    */
+	/* Kept unchanged                 */
+	/* ----------------------------- */
+
 	@container style(--phi--is-stacked-tabs-inline: 1)
 	{
 		.tab-position:not(.is-pinned):has(> .group)
@@ -225,7 +463,8 @@
 	
 			.group:not(.active)
 			{
-				.tab, .tab-indicator
+				.tab,
+				.tab-indicator
 				{
 					background-color: var(--colorAccentBgAlphaHeavy);
 				}
@@ -260,5 +499,51 @@
 		{
 			color: var(--colorFg);
 		}
+	}
+
+	/* ----------------------------- */
+	/* Restore New Tab (+) positioning */
+	/* ----------------------------- */
+
+	#tabs-container.left .toolbar-tabbar-after
+	{
+		display: flex !important;
+		flex: 0 0 44px !important;
+
+		height: 44px !important;
+		min-height: 44px !important;
+		max-height: 44px !important;
+
+		align-items: flex-start !important;
+		justify-content: center !important;
+
+		padding-top: 6px !important;
+		overflow: visible !important;
+	}
+
+	/* Do not let the flexible spacer push/center the + button vertically */
+	#tabs-container.left .toolbar-tabbar-after .toolbar-spacer-flexible
+	{
+		display: none !important;
+	}
+
+	/* Make sure the New Tab button itself is visible */
+	#tabs-container.left .toolbar-tabbar-after .button-toolbar.newtab
+	{
+		display: flex !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+
+		position: relative !important;
+		top: auto !important;
+		bottom: auto !important;
+		left: auto !important;
+		right: auto !important;
+
+		margin: 0 auto !important;
+		padding: 0 !important;
+
+		align-self: flex-start !important;
+		pointer-events: auto !important;
 	}
 }
