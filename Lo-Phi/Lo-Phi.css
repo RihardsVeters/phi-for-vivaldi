@@ -1,17 +1,23 @@
 /* lφ Lo-Phi custom version for Vivaldi
  * Stable Arc-style pinned tabs version
- * Supported accordeon style stacks
+ *
+ * (C) 2026 — Rihards Veters edits for original mod by KaKi87
  *
  * Goal:
  * - pinned tabs = dynamic-width rounded favicon-only blocks
  * - pinned tab horizontal gap matches normal row gap
  * - normal tabs remain original
- * - tab stacks remain original
+ * - normal tab stacks remain original
  * - accordion arrows remain visible, centered and light like the New Tab (+) button
- * - New Tab (+) button visible and not vertically centered in empty space
+ * - New Tab (+) button visible and not overlaying tabs
+ * - vertical tab list scrolling preserved
  * - pinned tab notification badge fixed and not clipped
  * - separator line does not touch sidebar edges
- * (C) 2026 — Rihards Veters edits for original mod by KaKi87
+ *
+ * Important:
+ * - No pinned tab-stack override in this version.
+ * - Do not apply transform directly to .VivaldiSvgIcon,
+ *   because Vivaldi uses it to rotate accordion arrows up/down.
  */
 
 :root
@@ -30,8 +36,8 @@
 	 */
 	--phi--pinned-tab-gap: var(--phi--normal-row-gap);
 
-	/* Stable height for tab-stack accordion arrows */
-	--phi--accordion-arrow-height: 10px;
+	/* Stable height for normal tab-stack accordion arrows */
+	--phi--accordion-arrow-height: 12px;
 
 	/* Separator side inset */
 	--phi--separator-inset: 12px;
@@ -41,18 +47,44 @@
 
 #app:has(#browser:not(.inner, .minimal-ui, .popup, .tabs-top, .tabs-bottom, .break-mode, .tabs-off))
 {
+	/* ----------------------------- */
+	/* Container / scrolling fix      */
+	/* ----------------------------- */
+
+	#tabs-container.left
+	{
+		display: flex !important;
+		flex-direction: column !important;
+		min-height: 0 !important;
+		overflow: hidden !important;
+	}
+
 	.resize
 	{
-		max-height: unset !important;
-		flex: 1 1 auto;
+		flex: 1 1 auto !important;
+		min-height: 0 !important;
+		max-height: none !important;
+
+		overflow-y: auto !important;
+		overflow-x: hidden !important;
+
+		padding-bottom: 8px !important;
 	}
+
+	.resize .tab-strip
+	{
+		overflow: visible !important;
+	}
+
+	/* ----------------------------- */
+	/* Main tab strip                 */
+	/* ----------------------------- */
 
 	.tab-strip
 	{
 		display: grid;
 
 		grid-template-columns: repeat(var(--phi--pinned-column-count), minmax(0, 1fr));
-
 		grid-auto-rows: min-content;
 
 		column-gap: var(--phi--pinned-tab-gap);
@@ -84,7 +116,7 @@
 	}
 
 	/* ----------------------------- */
-	/* Pinned tabs only               */
+	/* Pinned tabs                    */
 	/* ----------------------------- */
 
 	.tab-strip .tab-position.is-pinned
@@ -92,11 +124,10 @@
 		grid-column: auto;
 		grid-row: auto;
 
+		width: 100%;
 		height: var(--phi--pinned-tab-height);
 		min-height: var(--phi--pinned-tab-height);
 		max-height: var(--phi--pinned-tab-height);
-
-		width: 100%;
 
 		display: flex;
 		align-items: center;
@@ -497,11 +528,13 @@
 	}
 
 	/* ----------------------------- */
-	/* Restore New Tab (+) positioning */
+	/* New Tab (+) positioning        */
 	/* ----------------------------- */
 
 	#tabs-container.left .toolbar-tabbar-after
 	{
+		position: relative !important;
+
 		display: flex !important;
 		flex: 0 0 44px !important;
 
@@ -514,13 +547,17 @@
 
 		padding-top: 6px !important;
 		overflow: visible !important;
+
+		z-index: 2 !important;
 	}
 
+	/* Do not let the flexible spacer push/center the + button */
 	#tabs-container.left .toolbar-tabbar-after .toolbar-spacer-flexible
 	{
 		display: none !important;
 	}
 
+	/* Make sure the New Tab button itself stays visible */
 	#tabs-container.left .toolbar-tabbar-after .button-toolbar.newtab
 	{
 		display: flex !important;
