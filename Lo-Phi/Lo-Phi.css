@@ -1,6 +1,7 @@
 /* lφ Lo-Phi custom version for Vivaldi
  * Goal:
- * - pinned tabs = small rounded favicon-only squares
+ * - pinned tabs = dynamic-width rounded favicon-only blocks
+ * - pinned tab horizontal gap matches normal row gap
  * - normal tabs remain original
  * - tab stacks remain original
  * - accordion arrows remain visible, centered and light like the New Tab (+) button
@@ -16,14 +17,16 @@
 	--phi--pinned-column-count: 4;
 	--phi--is-stacked-tabs-inline: 1;
 
-	/* Pinned tab visual square size */
-	--phi--pinned-tab-size: 2rem;
-
-	/* Gap between pinned tab squares */
-	--phi--pinned-tab-gap: 5px;
+	/* Pinned tab height. Width is dynamic based on available column width. */
+	--phi--pinned-tab-height: 2.35rem;
 
 	/* Small spacing between normal tab rows / stack blocks */
 	--phi--normal-row-gap: 2px;
+
+	/* Gap between pinned tab columns.
+	 * Kept equal to normal row gap for a consistent rhythm.
+	 */
+	--phi--pinned-tab-gap: var(--phi--normal-row-gap);
 
 	/* Stable height for tab-stack accordion arrows */
 	--phi--accordion-arrow-height: 14px;
@@ -33,10 +36,6 @@
 }
 
 @import './phi-settings.css';
-
-/*┌───────────┐
-  │Source code│
-  └───────────┘*/
 
 #app:has(#browser:not(.inner, .minimal-ui, .popup, .tabs-top, .tabs-bottom, .break-mode, .tabs-off))
 {
@@ -50,20 +49,13 @@
 	{
 		display: grid;
 
-		/* Pinned tabs sit in columns,
-		 * normal tabs span full width.
-		 */
 		grid-template-columns: repeat(var(--phi--pinned-column-count), minmax(0, 1fr));
 
-		/* Preserve Vivaldi-calculated row heights:
-		 * normal tabs, separators, opened stacks.
-		 */
 		grid-auto-rows: min-content;
 
 		column-gap: var(--phi--pinned-tab-gap);
 		row-gap: var(--phi--normal-row-gap);
 
-		/* Important for pinned badge visibility */
 		overflow: visible !important;
 	}
 
@@ -78,7 +70,6 @@
 		position: relative;
 		transform: none;
 
-		/* Preserve original Vivaldi-calculated height */
 		height: var(--Height, auto);
 		min-height: var(--Height, auto);
 		max-height: var(--Height, none);
@@ -99,9 +90,11 @@
 		grid-column: auto;
 		grid-row: auto;
 
-		height: var(--phi--pinned-tab-size);
-		min-height: var(--phi--pinned-tab-size);
-		max-height: var(--phi--pinned-tab-size);
+		height: var(--phi--pinned-tab-height);
+		min-height: var(--phi--pinned-tab-height);
+		max-height: var(--phi--pinned-tab-height);
+
+		width: 100%;
 
 		display: flex;
 		align-items: center;
@@ -113,14 +106,14 @@
 
 	.tab-strip .tab-position.is-pinned .tab-wrapper
 	{
-		width: var(--phi--pinned-tab-size);
-		height: var(--phi--pinned-tab-size);
-		min-width: var(--phi--pinned-tab-size);
-		max-width: var(--phi--pinned-tab-size);
-		min-height: var(--phi--pinned-tab-size);
-		max-height: var(--phi--pinned-tab-size);
+		width: 100%;
+		height: var(--phi--pinned-tab-height);
+		min-width: 0;
+		max-width: none;
+		min-height: var(--phi--pinned-tab-height);
+		max-height: var(--phi--pinned-tab-height);
 
-		margin: 0 auto;
+		margin: 0;
 
 		overflow: visible !important;
 		position: relative;
@@ -128,12 +121,12 @@
 
 	.tab-strip .tab-position.is-pinned .tab
 	{
-		width: var(--phi--pinned-tab-size);
-		height: var(--phi--pinned-tab-size);
-		min-width: var(--phi--pinned-tab-size);
-		max-width: var(--phi--pinned-tab-size);
-		min-height: var(--phi--pinned-tab-size);
-		max-height: var(--phi--pinned-tab-size);
+		width: 100%;
+		height: var(--phi--pinned-tab-height);
+		min-width: 0;
+		max-width: none;
+		min-height: var(--phi--pinned-tab-height);
+		max-height: var(--phi--pinned-tab-height);
 
 		margin: 0;
 		padding: 0;
@@ -320,10 +313,7 @@
 		color: var(--colorFg) !important;
 	}
 
-	/* Opened accordion stack:
-	 * remove the artificial 2px row-gap inside opened stack,
-	 * but keep the 2px spacing between separate blocks.
-	 */
+	/* Keep opened accordion stack visually together */
 	.tab-strip .tab-position:has(.tab-in-accordion):not(:has(.tab-first-in-group))
 	{
 		margin-top: calc(-1 * var(--phi--normal-row-gap)) !important;
@@ -521,13 +511,11 @@
 		overflow: visible !important;
 	}
 
-	/* Do not let the flexible spacer push/center the + button vertically */
 	#tabs-container.left .toolbar-tabbar-after .toolbar-spacer-flexible
 	{
 		display: none !important;
 	}
 
-	/* Make sure the New Tab button itself is visible */
 	#tabs-container.left .toolbar-tabbar-after .button-toolbar.newtab
 	{
 		display: flex !important;
