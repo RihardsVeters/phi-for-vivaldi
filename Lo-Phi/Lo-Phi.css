@@ -11,12 +11,12 @@
  * - accordion arrows remain visible, centered and light like the New Tab (+) button
  * - New Tab (+) button visible and not overlaying tabs
  * - vertical tab list scrolling preserved
- * - address bar can expand normally when focused
- * - pinned tab notification badge fixed and kept inside the pinned tab to avoid clipping
+ * - pinned tab notification badge kept inside the pinned tab to avoid clipping
  * - separator line does not touch sidebar edges
  *
  * Important:
  * - No pinned tab-stack override in this version.
+ * - Address bar is not modified in this version.
  * - Do not apply transform directly to .VivaldiSvgIcon,
  *   because Vivaldi uses it to rotate accordion arrows up/down.
  */
@@ -58,10 +58,7 @@
 		flex-direction: column !important;
 		min-height: 0 !important;
 
-		/* Important:
-		 * Do not use overflow: hidden here,
-		 * because it clips the expanded/focused address bar.
-		 */
+		/* Keep this visible so other Vivaldi UI elements are not clipped. */
 		overflow: visible !important;
 	}
 
@@ -81,22 +78,6 @@
 	.resize .tab-strip
 	{
 		overflow: visible !important;
-	}
-
-	/* Let the top toolbar / address field expand normally */
-	#tabs-container.left .toolbar-tabbar-before,
-	#tabs-container.left .UrlBar-AddressField,
-	#tabs-container.left .UrlBar-UrlFieldWrapper,
-	#tabs-container.left .UrlField
-	{
-		overflow: visible !important;
-		z-index: 100 !important;
-	}
-
-	/* Make sure focused address field is above pinned tabs */
-	#tabs-container.left .UrlBar-AddressField:focus-within
-	{
-		z-index: 999 !important;
 	}
 
 	/* ----------------------------- */
