@@ -1,8 +1,4 @@
-[![](https://shields.kaki87.net/badge/git.kaki87.net-main-green?style=flat&logo=forgejo)](https://git.kaki87.net/KaKi87/phi-for-vivaldi)
-[![](https://shields.kaki87.net/gitea/stars/KaKi87/phi-for-vivaldi?gitea_url=https%3A%2F%2Fgit.kaki87.net&logo=forgejo)](https://git.kaki87.net/KaKi87/phi-for-vivaldi)
 
-[![](https://shields.kaki87.net/badge/github.com-mirror-blue?style=flat&logo=github)](https://github.com/KaKi87/phi-for-vivaldi)
-[![](https://shields.kaki87.net/github/stars/KaKi87/phi-for-vivaldi)](https://github.com/KaKi87/phi-for-vivaldi)
 
 # <img src="../icons/phi.svg" width="32" height="32"> Lo-Phi (/'loʊ,faɪ/)
 
