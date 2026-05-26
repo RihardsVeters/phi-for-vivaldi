@@ -1,137 +1,183 @@
-/* 
- * Vivaldi TitleBar hide
- * (C) 2026 — Rihards Veters
+/* Custom version for Vivaldi
+ * Centered bookmark bar in macOS titlebar area
  *
- * macOS native traffic-light buttons are not DOM elements.
- * They cannot be hidden with Vivaldi CSS.
- * This CSS hides Vivaldi's own titlebar/header and offsets the top UI
- * so the native buttons do not visually collide with the bookmark bar.
+ * (C) 2026 — Rihards Veters 
+ *
+ * Goal:
+ * - hide Vivaldi title text
+ * - do not touch macOS traffic lights
+ * - move bookmark bar upward into titlebar area
+ * - keep bookmark bar in normal document flow to avoid overlaying page content
+ * - center bookmark items horizontally
  */
 
+/* ----------------------------- */
+/* macOS titlebar cleanup        */
+/* ----------------------------- */
 
-/* -------------------------------------------------
-   1) Hide Vivaldi DOM titlebar/header
-------------------------------------------------- */
-
-#browser.mac #header,
-#browser.mac #header #titlebar,
-#browser.mac #titlebar,
-#browser.mac #pagetitle {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  max-height: 0 !important;
-  overflow: hidden !important;
+#browser.mac
+{
+	position: relative !important;
 }
 
-
-/* -------------------------------------------------
-   2) Remove Vivaldi reserved titlebar/header spacing
-------------------------------------------------- */
-
-#browser.mac {
-  --headerHeight: 0px !important;
-  --titlebarHeight: 0px !important;
-  margin-top: 0 !important;
-  padding-top: 0 !important;
+/* Paslēpj lapas/title tekstu */
+#browser.mac #pagetitle,
+#browser.mac #titlebar #pagetitle
+{
+	opacity: 0 !important;
+	visibility: hidden !important;
+	pointer-events: none !important;
 }
 
-#browser.mac #main,
+/* Samazina titlebar zonu, bet atstāj vietu traffic lights */
+#browser.mac #header
+{
+	height: 34px !important;
+	min-height: 34px !important;
+	max-height: 34px !important;
+
+	background: transparent !important;
+	border: 0 !important;
+	box-shadow: none !important;
+}
+
+#browser.mac #titlebar
+{
+	height: 34px !important;
+	min-height: 34px !important;
+	max-height: 34px !important;
+
+	background: transparent !important;
+	border: 0 !important;
+	box-shadow: none !important;
+}
+
+/* Drošībai — lai nekas neapgriež augšā pacelto bookmark bar */
 #browser.mac .mainbar,
-#browser.mac .inner,
-#browser.mac #webview-container {
-  top: 0 !important;
-  margin-top: 0 !important;
-  padding-top: 0 !important;
+#browser.mac .toolbar-mainbar,
+#browser.mac .toolbar-addressbar,
+#browser.mac #main,
+#browser.mac .inner
+{
+	overflow: visible !important;
 }
 
+/* ----------------------------- */
+/* Bookmark bar                  */
+/* ----------------------------- */
 
-/* -------------------------------------------------
-   3) Hide auto-hide wrapper titlebar variant
-------------------------------------------------- */
+/* Svarīgi: nelietojam position:absolute.
+ * Bookmark bar paliek layout plūsmā, tāpēc nepārklāj webview/settings saturu.
+ */
+#browser.mac.bookmark-bar-top .bookmark-bar.default
+{
+	position: relative !important;
 
-#app > .auto-hide .auto-hide-wrapper.top,
-#app > .auto-hide-off > .top,
-#app > .auto-hide > .top {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  max-height: 0 !important;
-  overflow: hidden !important;
+	height: 34px !important;
+	min-height: 34px !important;
+	max-height: 34px !important;
+
+	margin-top: -34px !important;
+	margin-bottom: 0 !important;
+
+	padding: 0 !important;
+
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+
+	background: transparent !important;
+	border: 0 !important;
+	box-shadow: none !important;
+
+	z-index: 20 !important;
+
+	overflow: visible !important;
+	pointer-events: auto !important;
 }
 
-#app > .auto-hide,
-#app > .auto-hide-off {
-  padding-top: 0 !important;
-  margin-top: 0 !important;
+/* Atstājam vietu traffic lights kreisajā pusē */
+#browser.mac.bookmark-bar-top .bookmark-bar.default .observer
+{
+	width: calc(100% - 130px) !important;
+	max-width: calc(100% - 130px) !important;
+
+	height: 34px !important;
+	min-height: 34px !important;
+	max-height: 34px !important;
+
+	margin-left: 110px !important;
+	margin-right: 20px !important;
+
+	padding: 0 !important;
+
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+
+	overflow: hidden !important;
 }
 
-
-/* -------------------------------------------------
-   4) macOS native traffic-light safe area
-   These buttons cannot be hidden via CSS, so reserve space.
-------------------------------------------------- */
-
-#browser.mac.maximized .bookmark-bar,
-#browser.mac .bookmark-bar {
-  padding-left: 70px !important;
-  box-sizing: border-box !important;
+/* Noņem Vivaldi liekos spacerus starp bookmarkiem */
+#browser.mac.bookmark-bar-top .bookmark-bar.default .observer > .spacer
+{
+	display: none !important;
 }
 
+/* Bookmark/folder item */
+#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem
+{
+	height: 28px !important;
+	min-height: 28px !important;
+	max-height: 28px !important;
 
-/* If bookmark bar becomes too cramped, reduce to 74px */
-/*
-#browser.mac .bookmark-bar {
-  padding-left: 74px !important;
-}
-*/
+	display: flex !important;
+	align-items: center !important;
 
+	margin: 0 5px !important;
+	padding: 0 7px !important;
 
-/* -------------------------------------------------
-   5) Keep bookmark bar compact and aligned
-------------------------------------------------- */
+	border-radius: 7px !important;
+	background: transparent !important;
 
-#browser.mac .bookmark-bar {
-  margin-top: 0 !important;
-  min-height: 29px !important;
-  height: 29px !important;
-}
-
-#browser.mac .bookmark-bar .observer {
-  height: 29px !important;
-  align-items: center !important;
+	overflow: hidden !important;
 }
 
+/* Folder ikonas */
+#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem svg,
+#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem .folder-icon
+{
+	width: 16px !important;
+	height: 16px !important;
 
-/* -------------------------------------------------
-   6) Optional: make top bar visually cleaner
-------------------------------------------------- */
+	margin-right: 5px !important;
 
-#browser.mac .bookmark-bar.default {
-  border-top: 0 !important;
+	flex: 0 0 auto !important;
 }
 
+/* Bookmark teksts */
+#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem .title
+{
+	max-width: 130px !important;
 
-/* -------------------------------------------------
-   7) Left vertical tabs / toolbar cleanup
-------------------------------------------------- */
+	font-size: 13px !important;
+	line-height: 28px !important;
 
-#browser.mac.tabs-left .tabbar-wrapper,
-#browser.mac.tabs-left #tabs-tabbar-container {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+	white-space: nowrap !important;
 }
 
+/* Hover */
+#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem:hover,
+#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem:focus-within
+{
+	background: var(--colorAccentBgAlpha) !important;
+}
 
-/* -------------------------------------------------
-   8) Prevent hidden titlebar from still catching mouse events
-------------------------------------------------- */
-
-#browser.mac #header,
-#browser.mac #titlebar,
-#browser.mac #pagetitle {
-  pointer-events: none !important;
+/* Ja kāds bookmarks ir aktīvs/fokusā */
+#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem[aria-expanded="true"],
+#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem:active
+{
+	background: var(--colorAccentBgAlphaHeavy) !important;
 }
