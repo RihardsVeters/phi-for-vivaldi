@@ -3,22 +3,12 @@
  *
  * (C) 2026 — Rihards Veters edits for original mod by KaKi87
  *
- * Goal:
+ * Stable baseline:
  * - pinned tabs = dynamic-width rounded favicon-only blocks
- * - pinned tab horizontal gap matches normal row gap
  * - normal tabs remain original
- * - normal tab stacks remain original
- * - accordion arrows remain visible, centered and light like the New Tab (+) button
- * - New Tab (+) button visible and not overlaying tabs
- * - vertical tab list scrolling preserved
- * - pinned tab notification badge kept inside the pinned tab to avoid clipping
- * - separator line does not touch sidebar edges
- *
- * Important:
- * - No pinned tab-stack override in this version.
- * - Address bar is not modified in this version.
- * - Do not apply transform directly to .VivaldiSvgIcon,
- *   because Vivaldi uses it to rotate accordion arrows up/down.
+ * - tab stacks remain original
+ * - vertical tab scrolling preserved
+ * - Vivaldi dynamic .resize max-height is not overridden
  */
 
 :root
@@ -26,21 +16,11 @@
 	--phi--pinned-column-count: 4;
 	--phi--is-stacked-tabs-inline: 1;
 
-	/* Pinned tab height. Width is dynamic based on available column width. */
 	--phi--pinned-tab-height: 2.35rem;
-
-	/* Small spacing between normal tab rows / stack blocks */
 	--phi--normal-row-gap: 4px;
-
-	/* Gap between pinned tab columns.
-	 * Kept equal to normal row gap for a consistent rhythm.
-	 */
 	--phi--pinned-tab-gap: var(--phi--normal-row-gap);
 
-	/* Stable height for normal tab-stack accordion arrows */
 	--phi--accordion-arrow-height: 12px;
-
-	/* Separator side inset */
 	--phi--separator-inset: 12px;
 }
 
@@ -48,17 +28,11 @@
 
 #app:has(#browser:not(.inner, .minimal-ui, .popup, .tabs-top, .tabs-bottom, .break-mode, .tabs-off))
 {
-	/* ----------------------------- */
-	/* Container / scrolling fix      */
-	/* ----------------------------- */
-
 	#tabs-container.left
 	{
 		display: flex !important;
 		flex-direction: column !important;
 		min-height: 0 !important;
-
-		/* Keep this visible so other Vivaldi UI elements are not clipped. */
 		overflow: visible !important;
 	}
 
@@ -66,9 +40,8 @@
 	{
 		flex: 1 1 auto !important;
 		min-height: 0 !important;
-		max-height: none !important;
 
-		/* Scrolling belongs only to the tab list area */
+		/* Important: do not override Vivaldi's dynamic max-height */
 		overflow-y: auto !important;
 		overflow-x: hidden !important;
 
@@ -80,19 +53,15 @@
 		overflow: visible !important;
 	}
 
-	/* ----------------------------- */
-	/* Main tab strip                 */
-	/* ----------------------------- */
-
 	.tab-strip
 	{
-		display: grid;
+		display: grid !important;
 
-		grid-template-columns: repeat(var(--phi--pinned-column-count), minmax(0, 1fr));
-		grid-auto-rows: min-content;
+		grid-template-columns: repeat(var(--phi--pinned-column-count), minmax(0, 1fr)) !important;
+		grid-auto-rows: min-content !important;
 
-		column-gap: var(--phi--pinned-tab-gap);
-		row-gap: var(--phi--normal-row-gap);
+		column-gap: var(--phi--pinned-tab-gap) !important;
+		row-gap: var(--phi--normal-row-gap) !important;
 
 		overflow: visible !important;
 	}
@@ -105,18 +74,20 @@
 	.tab-strip .tab-position,
 	.tab-strip .separator
 	{
-		position: relative;
-		transform: none;
+		position: relative !important;
 
-		height: var(--Height, auto);
-		min-height: var(--Height, auto);
-		max-height: var(--Height, none);
+		/* Needed for grid layout to work */
+		transform: none !important;
+
+		height: var(--Height, auto) !important;
+		min-height: var(--Height, auto) !important;
+		max-height: var(--Height, none) !important;
 	}
 
 	.tab-strip .tab-position > :first-child,
 	.tab-strip .tab-position > :first-child > :first-child
 	{
-		max-height: none;
+		max-height: none !important;
 	}
 
 	/* ----------------------------- */
@@ -125,17 +96,17 @@
 
 	.tab-strip .tab-position.is-pinned
 	{
-		grid-column: auto;
-		grid-row: auto;
+		grid-column: auto !important;
+		grid-row: auto !important;
 
-		width: 100%;
-		height: var(--phi--pinned-tab-height);
-		min-height: var(--phi--pinned-tab-height);
-		max-height: var(--phi--pinned-tab-height);
+		width: 100% !important;
+		height: var(--phi--pinned-tab-height) !important;
+		min-height: var(--phi--pinned-tab-height) !important;
+		max-height: var(--phi--pinned-tab-height) !important;
 
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
 
 		overflow: visible !important;
 		z-index: 5 !important;
@@ -143,74 +114,73 @@
 
 	.tab-strip .tab-position.is-pinned .tab-wrapper
 	{
-		width: 100%;
-		height: var(--phi--pinned-tab-height);
-		min-width: 0;
-		max-width: none;
-		min-height: var(--phi--pinned-tab-height);
-		max-height: var(--phi--pinned-tab-height);
+		width: 100% !important;
+		height: var(--phi--pinned-tab-height) !important;
 
-		margin: 0;
+		min-width: 0 !important;
+		max-width: none !important;
+		min-height: var(--phi--pinned-tab-height) !important;
+		max-height: var(--phi--pinned-tab-height) !important;
+
+		margin: 0 !important;
 
 		overflow: visible !important;
-		position: relative;
+		position: relative !important;
 	}
 
 	.tab-strip .tab-position.is-pinned .tab
 	{
-		width: 100%;
-		height: var(--phi--pinned-tab-height);
-		min-width: 0;
-		max-width: none;
-		min-height: var(--phi--pinned-tab-height);
-		max-height: var(--phi--pinned-tab-height);
+		width: 100% !important;
+		height: var(--phi--pinned-tab-height) !important;
 
-		margin: 0;
-		padding: 0;
+		min-width: 0 !important;
+		max-width: none !important;
+		min-height: var(--phi--pinned-tab-height) !important;
+		max-height: var(--phi--pinned-tab-height) !important;
 
-		border-radius: var(--currentRadius);
+		margin: 0 !important;
+		padding: 0 !important;
 
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		border-radius: var(--currentRadius) !important;
+
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
 
 		overflow: visible !important;
-		position: relative;
+		position: relative !important;
 	}
 
 	.tab-strip .tab-position.is-pinned .tab-header
 	{
-		width: 100%;
-		height: 100%;
+		width: 100% !important;
+		height: 100% !important;
 
-		padding: 0;
+		padding: 0 !important;
 
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
 
-		flex: 1 1 auto;
+		flex: 1 1 auto !important;
 
-		position: relative;
+		position: relative !important;
 		overflow: visible !important;
 	}
 
 	.tab-strip .tab-position.is-pinned .favicon
 	{
-		margin: 0;
-		flex: 0 0 auto;
+		margin: 0 !important;
+		flex: 0 0 auto !important;
 	}
 
 	.tab-strip .tab-position.is-pinned .title,
 	.tab-strip .tab-position.is-pinned .close,
 	.tab-strip .tab-position.is-pinned .button-toolbar
 	{
-		display: none;
+		display: none !important;
 	}
 
-	/* Fixed pinned tab notification badge.
-	 * Badge is kept inside the pinned tab block to avoid clipping by the scroll container.
-	 */
 	.tab-strip .tab-position.is-pinned .button-badge
 	{
 		position: absolute !important;
@@ -248,19 +218,28 @@
 	}
 
 	/* ----------------------------- */
-	/* Everything else remains normal */
+	/* Normal tabs                    */
 	/* ----------------------------- */
 
 	.tab-strip .tab-position:not(.is-pinned),
 	.tab-strip .separator
 	{
-		grid-column: 1 / -1;
+		grid-column: 1 / -1 !important;
 	}
 
-	/* Separator line: keep it inset from sidebar edges */
+	.tab-strip .tab-position:not(.is-pinned):not(.accordion-toggle-arrow)
+	{
+		margin-top: 0 !important;
+		margin-bottom: 0 !important;
+	}
+
+	/* ----------------------------- */
+	/* Separator                      */
+	/* ----------------------------- */
+
 	.tab-strip .separator
 	{
-		align-items: center;
+		align-items: center !important;
 
 		width: calc(100% - (var(--phi--separator-inset) * 2)) !important;
 		margin-left: var(--phi--separator-inset) !important;
@@ -276,20 +255,13 @@
 		margin-right: 0 !important;
 	}
 
-	/* Do not add manual margins to normal tabs */
-	.tab-strip .tab-position:not(.is-pinned):not(.accordion-toggle-arrow)
-	{
-		margin-top: 0 !important;
-		margin-bottom: 0 !important;
-	}
-
 	/* ----------------------------- */
-	/* Stable accordion arrow spacing */
+	/* Accordion arrows               */
 	/* ----------------------------- */
 
 	.tab-strip .tab-position.accordion-toggle-arrow
 	{
-		grid-column: 1 / -1;
+		grid-column: 1 / -1 !important;
 
 		--Height: var(--phi--accordion-arrow-height) !important;
 
@@ -339,7 +311,6 @@
 		opacity: 1 !important;
 		color: var(--colorFg) !important;
 
-		/* Fine-tune vertical position without overwriting Vivaldi's up/down rotation */
 		transform: translateY(-1px) !important;
 	}
 
@@ -355,7 +326,6 @@
 		color: var(--colorFg) !important;
 	}
 
-	/* Keep opened accordion stack visually together */
 	.tab-strip .tab-position:has(.tab-in-accordion):not(:has(.tab-first-in-group))
 	{
 		margin-top: calc(-1 * var(--phi--normal-row-gap)) !important;
@@ -367,8 +337,7 @@
 	}
 
 	/* ----------------------------- */
-	/* Original Lo-Phi stacked tabs    */
-	/* Kept unchanged                 */
+	/* Original Lo-Phi stacked tabs   */
 	/* ----------------------------- */
 
 	@container style(--phi--is-stacked-tabs-inline: 1)
@@ -383,24 +352,24 @@
 				margin: 0;
 				height: 100%;
 			}
-	
+
 			.tab
 			{
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
 				flex: 0 0 min-content;
 			}
-	
+
 			.tab-header
 			{
 				padding: 0 5px;
 			}
-	
+
 			.title
 			{
 				display: none;
 			}
-	
+
 			.tab-group-indicator
 			{
 				flex: 1;
@@ -410,13 +379,13 @@
 				left: unset;
 				padding: 0;
 			}
-	
+
 			.tab-indicator,
 			.tab-indicator::before
 			{
 				overflow: hidden;
 			}
-	
+
 			.tab-indicator
 			{
 				margin: 0;
@@ -428,31 +397,31 @@
 				display: flex;
 				align-items: center;
 			}
-	
+
 			.tab-indicator::before
 			{
 				content: attr(title);
 				padding-left: 5px;
 				text-overflow: ellipsis;
 			}
-	
+
 			.tab-indicator:first-child
 			{
 				border-top-left-radius: 0;
 			}
-	
+
 			.tab-indicator:last-child
 			{
 				border-top-right-radius: var(--currentRadius);
 				border-bottom-right-radius: var(--currentRadius);
 			}
-	
+
 			.tab-indicator:not(:last-child)
 			{
 				border-right: 1px solid var(--colorAccentBgAlpha);
 			}
 		}
-	
+
 		#browser.ui-transparent-tabs .tab-position:not(.is-pinned):has(> .group)
 		{
 			.tab,
@@ -460,24 +429,24 @@
 			{
 				background-color: transparent;
 			}
-	
+
 			&:hover,
 			&:has(.tab:hover)
 			{
 				border-color: var(--colorImageBgAlpha, var(--colorBgAlpha));
 			}
-	
+
 			&:hover .tab,
 			&:has(.tab:hover) .tab-indicator.active,
 			.tab-indicator:hover
 			{
 				background-color: var(--colorImageBgAlpha, var(--colorBgAlpha));
 			}
-	
+
 			&:has(.group.active)
 			{
 				border-color: var(--colorAccentBgAlpha);
-	
+
 				.tab,
 				.tab-indicator.active
 				{
@@ -485,14 +454,14 @@
 				}
 			}
 		}
-	
+
 		#browser:not(.ui-transparent-tabs) .tab-position:not(.is-pinned):has(> .group)
 		{
 			.group.active .tab
 			{
 				background-color: var(--colorBg) !important;
 			}
-	
+
 			.group:not(.active)
 			{
 				.tab,
@@ -501,23 +470,23 @@
 					background-color: var(--colorAccentBgAlphaHeavy);
 				}
 			}
-	
+
 			&:has(.group.active)
 			{
 				border-color: var(--colorBg);
-	
+
 				.tab-indicator:not(.active)
 				{
 					background-color: var(--colorAccentBgAlphaHeavy);
 				}
 			}
-	
+
 			&:hover,
 			&:has(.tab:hover)
 			{
 				border-color: var(--colorAccentBgAlpha);
 			}
-	
+
 			&:hover .tab,
 			&:has(.tab:hover) .tab-indicator.active,
 			.group:not(.active) .tab-indicator:hover,
@@ -526,60 +495,11 @@
 				background-color: var(--colorAccentBgAlpha) !important;
 			}
 		}
-	
+
 		#browser.isblurred .tab-position:not(.is-pinned):has(> .group) .tab-indicator
 		{
 			color: var(--colorFg);
 		}
 	}
 
-	/* ----------------------------- */
-	/* New Tab (+) positioning        */
-	/* ----------------------------- */
-
-	#tabs-container.left .toolbar-tabbar-after
-	{
-		position: relative !important;
-
-		display: flex !important;
-		flex: 0 0 44px !important;
-
-		height: 44px !important;
-		min-height: 44px !important;
-		max-height: 44px !important;
-
-		align-items: flex-start !important;
-		justify-content: center !important;
-
-		padding-top: 6px !important;
-		overflow: visible !important;
-
-		z-index: 2 !important;
-	}
-
-	/* Do not let the flexible spacer push/center the + button */
-	#tabs-container.left .toolbar-tabbar-after .toolbar-spacer-flexible
-	{
-		display: none !important;
-	}
-
-	/* Make sure the New Tab button itself stays visible */
-	#tabs-container.left .toolbar-tabbar-after .button-toolbar.newtab
-	{
-		display: flex !important;
-		visibility: visible !important;
-		opacity: 1 !important;
-
-		position: relative !important;
-		top: auto !important;
-		bottom: auto !important;
-		left: auto !important;
-		right: auto !important;
-
-		margin: 0 auto !important;
-		padding: 0 !important;
-
-		align-self: flex-start !important;
-		pointer-events: auto !important;
-	}
 }
