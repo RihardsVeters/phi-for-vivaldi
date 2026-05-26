@@ -1,5 +1,5 @@
-/* Custom version for Vivaldi
- * Bookmark bar centered + no truncation version
+/* lφ Custom version for Vivaldi
+ * Bookmark bar centered / left-offset version
  *
  * (C) 2026 — Rihards Veters
  *
@@ -7,9 +7,21 @@
  * - remove Vivaldi title bar area
  * - keep macOS traffic lights untouched
  * - move bookmark bar upward
- * - center bookmark bar horizontally
+ * - allow bookmark bar alignment:
+ *   1) centered
+ *   2) left with custom offset from traffic lights / window edge
  * - do not truncate bookmark folder names
  * - remove gaps between bookmark items
+ *
+ * How to switch alignment:
+ *
+ * LEFT MODE:
+ * --rv-bookmark-bar-justify: flex-start;
+ * --rv-bookmark-observer-margin: 0 0 0 var(--rv-bookmark-left-margin);
+ *
+ * CENTER MODE:
+ * --rv-bookmark-bar-justify: center;
+ * --rv-bookmark-observer-margin: 0 auto;
  */
 
 /* ----------------------------- */
@@ -22,6 +34,20 @@
 	--rv-bookmark-top-offset: 0px;
 	--rv-bookmark-gap: 0px;
 	--rv-bookmark-side-padding: 4px;
+
+	/* Left-mode offset */
+	--rv-bookmark-left-margin: 70px;
+
+	/* ACTIVE MODE: left with 50px offset */
+	--rv-bookmark-bar-justify: flex-start;
+	--rv-bookmark-observer-margin: 0 0 0 var(--rv-bookmark-left-margin);
+
+	/* CENTER MODE:
+	 * To center bookmark bar, replace the two lines above with:
+	 *
+	 * --rv-bookmark-bar-justify: center;
+	 * --rv-bookmark-observer-margin: 0 auto;
+	 */
 }
 
 /* ----------------------------- */
@@ -81,7 +107,7 @@
 
 		display: flex !important;
 		align-items: center !important;
-		justify-content: center !important;
+		justify-content: var(--rv-bookmark-bar-justify) !important;
 
 		padding: 0 !important;
 		margin: var(--rv-bookmark-top-offset) 0 0 0 !important;
@@ -103,7 +129,7 @@
 	#browser.mac.bookmark-bar-top .bookmark-bar.default .observer
 	{
 		width: auto !important;
-		max-width: 100% !important;
+		max-width: calc(100% - var(--rv-bookmark-left-margin)) !important;
 
 		height: var(--rv-bookmark-height) !important;
 		min-height: var(--rv-bookmark-height) !important;
@@ -111,12 +137,12 @@
 
 		display: flex !important;
 		align-items: center !important;
-		justify-content: center !important;
+		justify-content: flex-start !important;
 
 		gap: var(--rv-bookmark-gap) !important;
 
 		padding: 0 !important;
-		margin: 0 auto !important;
+		margin: var(--rv-bookmark-observer-margin) !important;
 
 		overflow: visible !important;
 	}
