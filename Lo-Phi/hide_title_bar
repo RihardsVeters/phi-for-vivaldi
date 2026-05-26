@@ -1,0 +1,137 @@
+/* 
+ * Vivaldi TitleBar hide
+ * (C) 2026 — Rihards Veters
+ *
+ * macOS native traffic-light buttons are not DOM elements.
+ * They cannot be hidden with Vivaldi CSS.
+ * This CSS hides Vivaldi's own titlebar/header and offsets the top UI
+ * so the native buttons do not visually collide with the bookmark bar.
+ */
+
+
+/* -------------------------------------------------
+   1) Hide Vivaldi DOM titlebar/header
+------------------------------------------------- */
+
+#browser.mac #header,
+#browser.mac #header #titlebar,
+#browser.mac #titlebar,
+#browser.mac #pagetitle {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+}
+
+
+/* -------------------------------------------------
+   2) Remove Vivaldi reserved titlebar/header spacing
+------------------------------------------------- */
+
+#browser.mac {
+  --headerHeight: 0px !important;
+  --titlebarHeight: 0px !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+#browser.mac #main,
+#browser.mac .mainbar,
+#browser.mac .inner,
+#browser.mac #webview-container {
+  top: 0 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+
+/* -------------------------------------------------
+   3) Hide auto-hide wrapper titlebar variant
+------------------------------------------------- */
+
+#app > .auto-hide .auto-hide-wrapper.top,
+#app > .auto-hide-off > .top,
+#app > .auto-hide > .top {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+}
+
+#app > .auto-hide,
+#app > .auto-hide-off {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+
+/* -------------------------------------------------
+   4) macOS native traffic-light safe area
+   These buttons cannot be hidden via CSS, so reserve space.
+------------------------------------------------- */
+
+#browser.mac.maximized .bookmark-bar,
+#browser.mac .bookmark-bar {
+  padding-left: 70px !important;
+  box-sizing: border-box !important;
+}
+
+
+/* If bookmark bar becomes too cramped, reduce to 74px */
+/*
+#browser.mac .bookmark-bar {
+  padding-left: 74px !important;
+}
+*/
+
+
+/* -------------------------------------------------
+   5) Keep bookmark bar compact and aligned
+------------------------------------------------- */
+
+#browser.mac .bookmark-bar {
+  margin-top: 0 !important;
+  min-height: 29px !important;
+  height: 29px !important;
+}
+
+#browser.mac .bookmark-bar .observer {
+  height: 29px !important;
+  align-items: center !important;
+}
+
+
+/* -------------------------------------------------
+   6) Optional: make top bar visually cleaner
+------------------------------------------------- */
+
+#browser.mac .bookmark-bar.default {
+  border-top: 0 !important;
+}
+
+
+/* -------------------------------------------------
+   7) Left vertical tabs / toolbar cleanup
+------------------------------------------------- */
+
+#browser.mac.tabs-left .tabbar-wrapper,
+#browser.mac.tabs-left #tabs-tabbar-container {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+
+/* -------------------------------------------------
+   8) Prevent hidden titlebar from still catching mouse events
+------------------------------------------------- */
+
+#browser.mac #header,
+#browser.mac #titlebar,
+#browser.mac #pagetitle {
+  pointer-events: none !important;
+}
