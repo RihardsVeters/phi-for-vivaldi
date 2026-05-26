@@ -1,183 +1,272 @@
 /* Custom version for Vivaldi
- * Centered bookmark bar in macOS titlebar area
+ * Bookmark bar centered + no truncation version
  *
- * (C) 2026 — Rihards Veters 
+ * (C) 2026 — Rihards Veters
  *
  * Goal:
- * - hide Vivaldi title text
- * - do not touch macOS traffic lights
- * - move bookmark bar upward into titlebar area
- * - keep bookmark bar in normal document flow to avoid overlaying page content
- * - center bookmark items horizontally
+ * - remove Vivaldi title bar area
+ * - keep macOS traffic lights untouched
+ * - move bookmark bar upward
+ * - center bookmark bar horizontally
+ * - do not truncate bookmark folder names
+ * - remove gaps between bookmark items
  */
 
 /* ----------------------------- */
-/* macOS titlebar cleanup        */
+/* Variables                     */
 /* ----------------------------- */
 
-#browser.mac
+:root
 {
-	position: relative !important;
-}
-
-/* Paslēpj lapas/title tekstu */
-#browser.mac #pagetitle,
-#browser.mac #titlebar #pagetitle
-{
-	opacity: 0 !important;
-	visibility: hidden !important;
-	pointer-events: none !important;
-}
-
-/* Samazina titlebar zonu, bet atstāj vietu traffic lights */
-#browser.mac #header
-{
-	height: 34px !important;
-	min-height: 34px !important;
-	max-height: 34px !important;
-
-	background: transparent !important;
-	border: 0 !important;
-	box-shadow: none !important;
-}
-
-#browser.mac #titlebar
-{
-	height: 34px !important;
-	min-height: 34px !important;
-	max-height: 34px !important;
-
-	background: transparent !important;
-	border: 0 !important;
-	box-shadow: none !important;
-}
-
-/* Drošībai — lai nekas neapgriež augšā pacelto bookmark bar */
-#browser.mac .mainbar,
-#browser.mac .toolbar-mainbar,
-#browser.mac .toolbar-addressbar,
-#browser.mac #main,
-#browser.mac .inner
-{
-	overflow: visible !important;
+	--rv-bookmark-height: 32px;
+	--rv-bookmark-top-offset: 0px;
+	--rv-bookmark-gap: 0px;
+	--rv-bookmark-side-padding: 4px;
 }
 
 /* ----------------------------- */
-/* Bookmark bar                  */
+/* Scope                         */
 /* ----------------------------- */
 
-/* Svarīgi: nelietojam position:absolute.
- * Bookmark bar paliek layout plūsmā, tāpēc nepārklāj webview/settings saturu.
- */
-#browser.mac.bookmark-bar-top .bookmark-bar.default
+#app:has(#browser.mac.bookmark-bar-top:not(.inner, .minimal-ui, .popup))
 {
-	position: relative !important;
+	/* ----------------------------- */
+	/* Hide / collapse title bar      */
+	/* ----------------------------- */
 
-	height: 34px !important;
-	min-height: 34px !important;
-	max-height: 34px !important;
+	#header,
+	#titlebar,
+	#pagetitle
+	{
+		height: 0 !important;
+		min-height: 0 !important;
+		max-height: 0 !important;
 
-	margin-top: -34px !important;
-	margin-bottom: 0 !important;
+		padding: 0 !important;
+		margin: 0 !important;
 
-	padding: 0 !important;
+		overflow: hidden !important;
+		visibility: hidden !important;
+		pointer-events: none !important;
+	}
 
-	display: flex !important;
-	align-items: center !important;
-	justify-content: center !important;
+	#browser.mac #header
+	{
+		display: block !important;
+	}
 
-	background: transparent !important;
-	border: 0 !important;
-	box-shadow: none !important;
+	/* ----------------------------- */
+	/* Main layout compensation       */
+	/* ----------------------------- */
 
-	z-index: 20 !important;
+	#browser.bookmark-bar-top #main
+	{
+		margin-top: 0 !important;
+	}
 
-	overflow: visible !important;
-	pointer-events: auto !important;
-}
+	#browser.bookmark-bar-top .mainbar
+	{
+		margin-top: 0 !important;
+	}
 
-/* Atstājam vietu traffic lights kreisajā pusē */
-#browser.mac.bookmark-bar-top .bookmark-bar.default .observer
-{
-	width: calc(100% - 130px) !important;
-	max-width: calc(100% - 130px) !important;
+	/* ----------------------------- */
+	/* Bookmark bar container         */
+	/* ----------------------------- */
 
-	height: 34px !important;
-	min-height: 34px !important;
-	max-height: 34px !important;
+	#browser.mac.bookmark-bar-top .bookmark-bar.default
+	{
+		height: var(--rv-bookmark-height) !important;
+		min-height: var(--rv-bookmark-height) !important;
+		max-height: var(--rv-bookmark-height) !important;
 
-	margin-left: 110px !important;
-	margin-right: 20px !important;
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
 
-	padding: 0 !important;
+		padding: 0 !important;
+		margin: var(--rv-bookmark-top-offset) 0 0 0 !important;
 
-	display: flex !important;
-	align-items: center !important;
-	justify-content: center !important;
+		overflow: visible !important;
 
-	overflow: hidden !important;
-}
+		background: transparent !important;
+		border: 0 !important;
+		box-shadow: none !important;
 
-/* Noņem Vivaldi liekos spacerus starp bookmarkiem */
-#browser.mac.bookmark-bar-top .bookmark-bar.default .observer > .spacer
-{
-	display: none !important;
-}
+		position: relative !important;
+		z-index: 50 !important;
+	}
 
-/* Bookmark/folder item */
-#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem
-{
-	height: 28px !important;
-	min-height: 28px !important;
-	max-height: 28px !important;
+	/* ----------------------------- */
+	/* Bookmark bar inner observer    */
+	/* ----------------------------- */
 
-	display: flex !important;
-	align-items: center !important;
+	#browser.mac.bookmark-bar-top .bookmark-bar.default .observer
+	{
+		width: auto !important;
+		max-width: 100% !important;
 
-	margin: 0 5px !important;
-	padding: 0 7px !important;
+		height: var(--rv-bookmark-height) !important;
+		min-height: var(--rv-bookmark-height) !important;
+		max-height: var(--rv-bookmark-height) !important;
 
-	border-radius: 7px !important;
-	background: transparent !important;
+		display: flex !important;
+		align-items: center !important;
+		justify-content: center !important;
 
-	overflow: hidden !important;
-}
+		gap: var(--rv-bookmark-gap) !important;
 
-/* Folder ikonas */
-#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem svg,
-#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem .folder-icon
-{
-	width: 16px !important;
-	height: 16px !important;
+		padding: 0 !important;
+		margin: 0 auto !important;
 
-	margin-right: 5px !important;
+		overflow: visible !important;
+	}
 
-	flex: 0 0 auto !important;
-}
+	/* ----------------------------- */
+	/* Remove Vivaldi spacer gaps     */
+	/* ----------------------------- */
 
-/* Bookmark teksts */
-#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem .title
-{
-	max-width: 130px !important;
+	#browser.mac.bookmark-bar-top .bookmark-bar.default .spacer
+	{
+		width: 0 !important;
+		min-width: 0 !important;
+		max-width: 0 !important;
 
-	font-size: 13px !important;
-	line-height: 28px !important;
+		padding: 0 !important;
+		margin: 0 !important;
 
-	overflow: hidden !important;
-	text-overflow: ellipsis !important;
-	white-space: nowrap !important;
-}
+		flex: 0 0 0 !important;
+		overflow: hidden !important;
+	}
 
-/* Hover */
-#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem:hover,
-#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem:focus-within
-{
-	background: var(--colorAccentBgAlpha) !important;
-}
+	/* ----------------------------- */
+	/* Bookmark items                 */
+	/* ----------------------------- */
 
-/* Ja kāds bookmarks ir aktīvs/fokusā */
-#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem[aria-expanded="true"],
-#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem:active
-{
-	background: var(--colorAccentBgAlphaHeavy) !important;
+	#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem
+	{
+		width: auto !important;
+		min-width: max-content !important;
+		max-width: none !important;
+
+		height: 28px !important;
+		min-height: 28px !important;
+		max-height: 28px !important;
+
+		display: inline-flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+
+		gap: 5px !important;
+
+		padding-left: var(--rv-bookmark-side-padding) !important;
+		padding-right: var(--rv-bookmark-side-padding) !important;
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
+
+		margin: 0 !important;
+
+		flex: 0 0 auto !important;
+
+		overflow: visible !important;
+		white-space: nowrap !important;
+
+		border-radius: var(--radiusRoundedLess, 7px) !important;
+		box-sizing: border-box !important;
+	}
+
+	#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem:hover
+	{
+		background-color: var(--colorAccentBgAlphaHeavy) !important;
+	}
+
+	#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem:focus-visible,
+	#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem.uifocusstop:focus-visible
+	{
+		outline: 2px solid var(--colorHighlightBg) !important;
+		outline-offset: 1px !important;
+	}
+
+	/* ----------------------------- */
+	/* Folder icon                    */
+	/* ----------------------------- */
+
+	#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem .folder-icon,
+	#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem svg.folder-icon
+	{
+		width: 16px !important;
+		min-width: 16px !important;
+		max-width: 16px !important;
+
+		height: 16px !important;
+		min-height: 16px !important;
+		max-height: 16px !important;
+
+		flex: 0 0 16px !important;
+
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+
+	/* ----------------------------- */
+	/* Bookmark title text            */
+	/* ----------------------------- */
+
+	#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem .title
+	{
+		width: auto !important;
+		min-width: max-content !important;
+		max-width: none !important;
+
+		display: inline-block !important;
+
+		overflow: visible !important;
+		text-overflow: clip !important;
+		white-space: nowrap !important;
+
+		font-size: 13px !important;
+		font-weight: 500 !important;
+		line-height: 28px !important;
+
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+
+	/* ----------------------------- */
+	/* Active / selected item         */
+	/* ----------------------------- */
+
+	#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem.active,
+	#browser.mac.bookmark-bar-top .bookmark-bar.default .bookmarkbarItem[aria-expanded="true"]
+	{
+		background-color: var(--colorAccentBgAlphaHeavy) !important;
+	}
+
+	/* ----------------------------- */
+	/* Keep bookmark bar above page   */
+	/* ----------------------------- */
+
+	#browser.mac.bookmark-bar-top #webview-container
+	{
+		position: relative !important;
+		z-index: 1 !important;
+	}
+
+	#browser.mac.bookmark-bar-top .bookmark-bar.default
+	{
+		position: relative !important;
+		z-index: 20 !important;
+	}
+
+	/* ----------------------------- */
+	/* Safety: do not affect tabs     */
+	/* ----------------------------- */
+
+	#tabs-container,
+	#tabs-tabbar-container,
+	.tab-strip,
+	.tab-position,
+	.resize
+	{
+		/* intentionally untouched */
+	}
 }
